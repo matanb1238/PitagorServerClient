@@ -8,9 +8,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    unsigned int a = atoi(argv[1]);
-    unsigned int b = atoi(argv[2]);
-    unsigned int c = atoi(argv[3]);
+    unsigned char a = (unsigned char)atoi(argv[1]);
+    unsigned char b = (unsigned char)atoi(argv[2]);
+    unsigned char c = (unsigned char)atoi(argv[3]);
 
     if (a <= 0 || b <= 0 || c <= 0) {
         printf("Sides must be positive integers.\n");
