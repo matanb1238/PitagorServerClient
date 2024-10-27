@@ -15,57 +15,14 @@
 #define MAX_REQUESTS 3
 #define BUFFER_SIZE 1024
 
-void handle_client_request(int clientSocketFd, unsigned char *requests, int *requests_count) {
-    // Receive the client's request
-    char buffer[BUFFER_SIZE];
-    memset(buffer, 0, sizeof(buffer)); // Initialize buffer to all zeros
-    int bytes_received = recv(clientSocketFd, buffer, sizeof(buffer) - 1, 0);
-    if (bytes_received <= 0) {
-        if (bytes_received == 0) {
-            printf("Client disconnected\n");
-        } else {
-            perror("Error receiving request");
-        }
-        close(clientSocketFd);
-        return;
-    }   
-    buffer[bytes_received] = '\0'; // Null-terminate the string
-    printf("Bytes Recieved = %d\n Buffer = %s\n", bytes_received, buffer);
-    unsigned int request = atoi(buffer);
-    printf("Received request from client: %u\n", request);
 
-    // Store the request
-    requests[*requests_count % MAX_REQUESTS] = request;
-    (*requests_count)++;
-
-
-    // Check if we have at least 3 requests
-    if (*requests_count >= MAX_REQUESTS) {
-        // Check if the last 3 requests form a Pythagorean triple
-        unsigned char a = requests[(*requests_count - 3) % MAX_REQUESTS];
-        unsigned char b = requests[(*requests_count - 2) % MAX_REQUESTS];
-        unsigned char c = requests[(*requests_count - 1) % MAX_REQUESTS];
-        if (a * a + b * b == c * c ||
+int is_pitagor(unsigned char a, unsigned char b, unsigned char c){
+    if (a * a + b * b == c * c ||
         a * a + c * c == b * b ||
         b * b + c * c == a * a) {
-            // Respond with YES
-            const char *response = "YES";
-            send(clientSocketFd, response, strlen(response), 0);
-            printf("Sent response to client: %s\n", response);
-        } else {
-            // Respond with NO
-            const char *response = "NO";
-            send(clientSocketFd, response, strlen(response), 0);
-            printf("Sent response to client: %s\n", response);
+            return 1;
         }
-    }
-    else
-    {   
-        // less than 3
-        const char *response = "Not enough samples";
-        send(clientSocketFd, response, strlen(response), 0);
-        printf("Sent response to client: %s\n", response);
-    }
+    return 0;
 }
 
 int main() {
@@ -99,25 +56,64 @@ int main() {
 
     printf("Server listening on port %d...\n", PORT);
 
-    // Accept incoming connections
     while (1) {
+        // Accept client connection
         socklen_t clientAddrLen = sizeof(clientAddr);
-        if ((clientSocketFd = accept(serverSocketFd, (struct sockaddr *)&clientAddr, &clientAddrLen)) < 0) {
+        clientSocketFd = accept(serverSocketFd, (struct sockaddr *)&clientAddr, &clientAddrLen);
+        if (clientSocketFd < 0) {
             perror("accept failed");
-            continue;
+            continue; // Retry accepting a new client
         }
 
         printf("Accepted new connection from %s:%d\n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
+        
+        requests_count = 0;
 
-        // Handle client requests
-        handle_client_request(clientSocketFd, requests, &requests_count);
+        // Loop to process client requests
+        while (1) {
+            char buffer[BUFFER_SIZE];
+            int bytes_received = recv(clientSocketFd, buffer, sizeof(buffer) - 1, 0);
+            
+            if (bytes_received <= 0) {
+                if (bytes_received == 0) {
+                    printf("Client disconnected\n");
+                } else {
+                    perror("Error receiving request");
+                }
+                close(clientSocketFd);
+                break;
+            }
 
-        // Close the client socket
-        close(clientSocketFd);
+            printf("Bytes Received = %d\n", bytes_received);
+            buffer[bytes_received] = '\0';
+
+            // Convert received data to unsigned integer
+            unsigned int request = (unsigned char)buffer[0];
+            printf("Received request from client: %u\n", request);
+
+            // Store the request
+            requests[requests_count % MAX_REQUESTS] = request;
+            requests_count++;
+
+            // Check if we have at least 3 requests
+            if (requests_count >= MAX_REQUESTS) {
+                unsigned char a = requests[0];
+                unsigned char b = requests[1];
+                unsigned char c = requests[2];
+                const char *response = is_pitagor(a, b, c) ? "YES" : "NO";
+                send(clientSocketFd, response, strlen(response), 0);
+                printf("Sent response to client: %s\n", response);
+            } else {
+                const char *response = "Not enough samples";
+                send(clientSocketFd, response, strlen(response), 0);
+                printf("Sent response to client: %s\n", response);
+            }
+        }
+
+        // Close the client socket and loop back to accept a new client connection
     }
 
-    // Close the server socket
+    // Close the server socket when done (if we ever break out of the main loop)
     close(serverSocketFd);
-
     return 0;
 }

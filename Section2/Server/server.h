@@ -1,6 +1,6 @@
 #ifndef SERVER_H
 #define SERVER_H
 
-void handle_client_request(int clientSocketFd, unsigned char *requests, int *requests_count);
+int is_pitagor(unsigned char a, unsigned char b, unsigned char c);
 
 #endif /* SERVER_H */

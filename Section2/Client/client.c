@@ -48,14 +48,19 @@ int create_connection(const char *server_address, const char *server_port)
     return sockfd;
 }
 
-void send_random_integer(int sockfd, unsigned char random_integer)
+void send_random_integer(int sockfd)
 {
-    char buffer[BUFFER_SIZE];
-    snprintf(buffer, BUFFER_SIZE, "%hhu", random_integer);
-    if (send(sockfd, buffer, strlen(buffer), 0) == -1)
-    {
-        perror("send");
-        exit(EXIT_FAILURE);
+    unsigned char random_num;
+    for (int i = 0; i < 10; i++) {
+        // Generate a random unsigned char
+        random_num = rand() % 255 + 1;
+        printf("Sending: %d\n", random_num);
+
+        // Send the random number to the server
+        send(sockfd, &random_num, sizeof(random_num), 0);
+
+        // Recieve response from the server
+        receive_response(sockfd);
     }
 }
 
@@ -71,7 +76,8 @@ void receive_response(int sockfd)
     }
 
     buffer[bytes_received] = '\0';
-    printf("Received: %s\n", buffer);
+    printf("Received: %s\n"
+            "========\n", buffer);
 }
 
 int main(int argc, char *argv[])
@@ -92,12 +98,7 @@ int main(int argc, char *argv[])
 
     srand(seed);
 
-    unsigned int random_num = rand() % 100 + 1;
-    send_random_integer(sockfd, random_num);
-
-    // Recieve response from the server
-    receive_response(sockfd);
-    
+    send_random_integer(sockfd);
 
     // Close the socket
     close(sockfd);
