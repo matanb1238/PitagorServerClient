@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <time.h>
 #include <arpa/inet.h>
 #include "client.h"
 
@@ -48,18 +49,18 @@ int create_connection(const char *server_address, const char *server_port)
     return sockfd;
 }
 
-void send_random_integer(int sockfd)
+void send_random_integer(int sockfd, int client_id)
 {
     unsigned char random_num;
     for (int i = 0; i < 10; i++) {
         // Generate a random unsigned char
-        random_num = rand() % 255 + 1;
-        printf("Sending: %d\n", random_num);
+        random_num = rand() % 256 + 1;
+        printf("Client %d Sending: %d\n", client_id, random_num); // Include client ID
 
         // Send the random number to the server
         send(sockfd, &random_num, sizeof(random_num), 0);
 
-        // Recieve response from the server
+        // Receive response from the server
         receive_response(sockfd);
     }
 }
@@ -76,29 +77,28 @@ void receive_response(int sockfd)
     }
 
     buffer[bytes_received] = '\0';
-    printf("Received: %s\n"
-            "========\n", buffer);
+    printf("Received: %s\n", buffer);
 }
 
 int main(int argc, char *argv[])
 {
-    if (argc != 4)
+    if (argc != 4) // Ensure to include client ID
     {
-        fprintf(stderr, "Usage: %s <server_address> <server_port>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <server_address> <server_port> <client_id>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
     const char *server_address = argv[1];
     const char *server_port = argv[2];
-    const unsigned int seed = atoi(argv[3]);
+    int client_id = atoi(argv[3]); // Get client ID from arguments
 
-    printf("Server Address: %s\n, Server Port: %s\n, Seed: %u\n", server_address, server_port, seed);
+    printf("Client %d: Server Address: %s, Server Port: %s\n", client_id, server_address, server_port);
 
     int sockfd = create_connection(server_address, server_port);
 
-    srand(seed);
+    srand(time(NULL) ^ (client_id << 16)); // Seed random with client ID for variability
 
-    send_random_integer(sockfd);
+    send_random_integer(sockfd, client_id); // Pass client ID to function
 
     // Close the socket
     close(sockfd);

@@ -1,0 +1,436 @@
+NO: The last three edges (62, 147, 32) do not form a Pythagorean triple.
+Received request from client: 222
+NO: The last three edges (147, 32, 222) do not form a Pythagorean triple.
+Client disconnected
+Accepted new connection from 127.0.0.1:44106
+Received request from client: 241
+NO: The last three edges (32, 222, 241) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:44122
+Received request from client: 203
+NO: The last three edges (222, 241, 203) do not form a Pythagorean triple.
+Received request from client: 196
+NO: The last three edges (241, 203, 196) do not form a Pythagorean triple.
+Received request from client: 166
+NO: The last three edges (203, 196, 166) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:44130
+Received request from client: 102
+NO: The last three edges (196, 166, 102) do not form a Pythagorean triple.
+Received request from client: 128
+NO: The last three edges (166, 102, 128) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 150
+NO: The last three edges (102, 128, 150) do not form a Pythagorean triple.
+Received request from client: 20
+NO: The last three edges (128, 150, 20) do not form a Pythagorean triple.
+Received request from client: 249
+NO: The last three edges (150, 20, 249) do not form a Pythagorean triple.
+Received request from client: 202
+NO: The last three edges (20, 249, 202) do not form a Pythagorean triple.
+Received request from client: 231
+NO: The last three edges (249, 202, 231) do not form a Pythagorean triple.
+Client disconnected
+Client disconnected
+Client disconnected
+Accepted new connection from 127.0.0.1:38348
+Accepted new connection from 127.0.0.1:38364
+Received request from client: 253
+NO: The last three edges (0, 231, 253) do not form a Pythagorean triple.
+Received request from client: 31
+NO: The last three edges (1, 0, 31) do not form a Pythagorean triple.
+Received request from client: 101
+NO: The last three edges (0, 31, 101) do not form a Pythagorean triple.
+Client disconnected
+Accepted new connection from 127.0.0.1:38370
+Accepted new connection from 127.0.0.1:38380
+Received request from client: 215
+NO: The last three edges (5, 0, 215) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:38394
+Received request from client: 134
+NO: The last three edges (0, 215, 134) do not form a Pythagorean triple.
+Received request from client: 81
+NO: The last three edges (215, 134, 81) do not form a Pythagorean triple.
+Received request from client: 145
+NO: The last three edges (134, 1, 145) do not form a Pythagorean triple.
+Received request from client: 121
+NO: The last three edges (1, 0, 121) do not form a Pythagorean triple.
+Received request from client: 196
+NO: The last three edges (0, 0, 196) do not form a Pythagorean triple.
+Client disconnected
+Client disconnected
+Received request from client: 102
+NO: The last three edges (0, 0, 102) do not form a Pythagorean triple.
+Received request from client: 248
+NO: The last three edges (0, 102, 248) do not form a Pythagorean triple.
+Received request from client: 26
+NO: The last three edges (102, 248, 26) do not form a Pythagorean triple.
+Client disconnected
+Accepted new connection from 127.0.0.1:39898
+Accepted new connection from 127.0.0.1:39910
+Accepted new connection from 127.0.0.1:39926
+Accepted new connection from 127.0.0.1:39930
+Received request from client: 228
+NO: The last three edges (248, 26, 228) do not form a Pythagorean triple.
+Received request from client: 187
+NO: The last three edges (26, 228, 187) do not form a Pythagorean triple.
+Received request from client: 201
+NO: The last three edges (228, 1, 201) do not form a Pythagorean triple.
+Received request from client: 189
+NO: The last three edges (1, 0, 189) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 57
+NO: The last three edges (0, 0, 57) do not form a Pythagorean triple.
+Received request from client: 163
+NO: The last three edges (0, 0, 163) do not form a Pythagorean triple.
+Received request from client: 11
+NO: The last three edges (0, 163, 11) do not form a Pythagorean triple.
+Received request from client: 26
+NO: The last three edges (163, 11, 26) do not form a Pythagorean triple.
+Received request from client: 1
+NO: The last three edges (11, 26, 1) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 200
+NO: The last three edges (26, 1, 200) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:39942
+Received request from client: 161
+NO: The last three edges (1, 1, 161) do not form a Pythagorean triple.
+Received request from client: 11
+NO: The last three edges (1, 0, 11) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 42
+NO: The last three edges (0, 32, 42) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 251
+NO: The last three edges (32, 0, 251) do not form a Pythagorean triple.
+Received request from client: 240
+NO: The last three edges (0, 251, 240) do not form a Pythagorean triple.
+Client disconnected
+Accepted new connection from 127.0.0.1:59822
+Received request from client: 247
+NO: The last three edges (251, 240, 247) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:59832
+Received request from client: 52
+NO: The last three edges (240, 247, 52) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:59844
+Received request from client: 67
+NO: The last three edges (247, 52, 67) do not form a Pythagorean triple.
+Received request from client: 169
+NO: The last three edges (52, 1, 169) do not form a Pythagorean triple.
+Received request from client: 202
+NO: The last three edges (1, 0, 202) do not form a Pythagorean triple.
+Received request from client: 155
+NO: The last three edges (0, 32, 155) do not form a Pythagorean triple.
+Received request from client: 35
+NO: The last three edges (32, 0, 35) do not form a Pythagorean triple.
+Received request from client: 78
+NO: The last three edges (0, 35, 78) do not form a Pythagorean triple.
+Received request from client: 67
+NO: The last three edges (35, 78, 67) do not form a Pythagorean triple.
+Received request from client: 187
+NO: The last three edges (78, 67, 187) do not form a Pythagorean triple.
+Received request from client: 199
+NO: The last three edges (67, 187, 199) do not form a Pythagorean triple.
+Received request from client: 92
+NO: The last three edges (187, 1, 92) do not form a Pythagorean triple.
+Received request from client: 158
+NO: The last three edges (1, 92, 158) do not form a Pythagorean triple.
+Received request from client: 55
+NO: The last three edges (0, 0, 55) do not form a Pythagorean triple.
+Received request from client: 1
+NO: The last three edges (0, 55, 1) do not form a Pythagorean triple.
+Received request from client: 118
+NO: The last three edges (0, 1, 118) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 220
+NO: The last three edges (1, 118, 220) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:59860
+Received request from client: 210
+NO: The last three edges (118, 220, 210) do not form a Pythagorean triple.
+Received request from client: 135
+NO: The last three edges (220, 210, 135) do not form a Pythagorean triple.
+Received request from client: 147
+NO: The last three edges (210, 1, 147) do not form a Pythagorean triple.
+Received request from client: 242
+NO: The last three edges (1, 0, 242) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:59868
+Received request from client: 5
+NO: The last three edges (0, 0, 5) do not form a Pythagorean triple.
+Received request from client: 164
+NO: The last three edges (0, 0, 164) do not form a Pythagorean triple.
+Received request from client: 3
+NO: The last three edges (0, 164, 3) do not form a Pythagorean triple.
+Received request from client: 89
+NO: The last three edges (164, 3, 89) do not form a Pythagorean triple.
+Received request from client: 134
+NO: The last three edges (3, 89, 134) do not form a Pythagorean triple.
+Received request from client: 249
+NO: The last three edges (89, 134, 249) do not form a Pythagorean triple.
+Received request from client: 174
+NO: The last three edges (134, 1, 174) do not form a Pythagorean triple.
+Received request from client: 24
+NO: The last three edges (1, 0, 24) do not form a Pythagorean triple.
+Received request from client: 131
+NO: The last three edges (0, 0, 131) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 107
+NO: The last three edges (0, 0, 107) do not form a Pythagorean triple.
+Received request from client: 54
+NO: The last three edges (0, 107, 54) do not form a Pythagorean triple.
+Received request from client: 210
+NO: The last three edges (107, 54, 210) do not form a Pythagorean triple.
+Received request from client: 212
+NO: The last three edges (54, 210, 212) do not form a Pythagorean triple.
+Received request from client: 165
+NO: The last three edges (210, 212, 165) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 44
+NO: The last three edges (212, 1, 44) do not form a Pythagorean triple.
+Received request from client: 30
+NO: The last three edges (1, 0, 30) do not form a Pythagorean triple.
+Received request from client: 188
+NO: The last three edges (0, 0, 188) do not form a Pythagorean triple.
+Received request from client: 66
+NO: The last three edges (0, 0, 66) do not form a Pythagorean triple.
+Received request from client: 8
+NO: The last three edges (0, 66, 8) do not form a Pythagorean triple.
+Received request from client: 189
+NO: The last three edges (66, 8, 189) do not form a Pythagorean triple.
+Received request from client: 33
+NO: The last three edges (8, 189, 33) do not form a Pythagorean triple.
+Received request from client: 248
+NO: The last three edges (189, 33, 248) do not form a Pythagorean triple.
+Received request from client: 135
+NO: The last three edges (33, 248, 135) do not form a Pythagorean triple.
+Received request from client: 141
+NO: The last three edges (1, 0, 141) do not form a Pythagorean triple.
+Received request from client: 157
+NO: The last three edges (0, 32, 157) do not form a Pythagorean triple.
+Received request from client: 197
+NO: The last three edges (32, 0, 197) do not form a Pythagorean triple.
+Received request from client: 95
+NO: The last three edges (0, 197, 95) do not form a Pythagorean triple.
+Received request from client: 59
+NO: The last three edges (197, 95, 59) do not form a Pythagorean triple.
+Received request from client: 98
+NO: The last three edges (95, 59, 98) do not form a Pythagorean triple.
+Client disconnected
+Client disconnected
+Accepted new connection from 127.0.0.1:44608
+Accepted new connection from 127.0.0.1:44612
+Received request from client: 190
+NO: The last three edges (59, 98, 190) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:44626
+Received request from client: 130
+NO: The last three edges (98, 1, 130) do not form a Pythagorean triple.
+Received request from client: 226
+NO: The last three edges (1, 130, 226) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:44634
+Received request from client: 100
+NO: The last three edges (0, 32, 100) do not form a Pythagorean triple.
+Received request from client: 43
+NO: The last three edges (32, 100, 43) do not form a Pythagorean triple.
+Received request from client: 116
+NO: The last three edges (0, 43, 116) do not form a Pythagorean triple.
+Received request from client: 194
+NO: The last three edges (43, 116, 194) do not form a Pythagorean triple.
+Received request from client: 191
+NO: The last three edges (116, 194, 191) do not form a Pythagorean triple.
+Received request from client: 156
+NO: The last three edges (194, 191, 1) do not form a Pythagorean triple.
+Received request from client: 15
+NO: The last three edges (191, 1, 0) do not form a Pythagorean triple.
+Received request from client: 112
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 181
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 71
+NO: The last three edges (0, 0, 255) do not form a Pythagorean triple.
+Received request from client: 88
+NO: The last three edges (0, 255, 255) do not form a Pythagorean triple.
+Received request from client: 99
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 178
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 54
+NO: The last three edges (255, 255, 1) do not form a Pythagorean triple.
+Received request from client: 76
+NO: The last three edges (255, 1, 0) do not form a Pythagorean triple.
+Received request from client: 156
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 227
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 69
+NO: The last three edges (0, 0, 255) do not form a Pythagorean triple.
+Received request from client: 237
+NO: The last three edges (0, 255, 255) do not form a Pythagorean triple.
+Received request from client: 119
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 40
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 40
+NO: The last three edges (255, 255, 1) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 170
+NO: The last three edges (255, 1, 0) do not form a Pythagorean triple.
+Received request from client: 174
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 199
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:44636
+Received request from client: 151
+NO: The last three edges (0, 0, 255) do not form a Pythagorean triple.
+Received request from client: 63
+NO: The last three edges (0, 255, 255) do not form a Pythagorean triple.
+Received request from client: 235
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 84
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 237
+NO: The last three edges (255, 255, 1) do not form a Pythagorean triple.
+Received request from client: 149
+NO: The last three edges (255, 1, 0) do not form a Pythagorean triple.
+Received request from client: 152
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 85
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 142
+NO: The last three edges (0, 0, 255) do not form a Pythagorean triple.
+Received request from client: 103
+NO: The last three edges (0, 255, 255) do not form a Pythagorean triple.
+Received request from client: 133
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 176
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 151
+NO: The last three edges (255, 255, 1) do not form a Pythagorean triple.
+Received request from client: 148
+NO: The last three edges (255, 1, 0) do not form a Pythagorean triple.
+Received request from client: 202
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 116
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 202
+NO: The last three edges (0, 0, 255) do not form a Pythagorean triple.
+Received request from client: 245
+NO: The last three edges (0, 255, 255) do not form a Pythagorean triple.
+Received request from client: 36
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 199
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 228
+NO: The last three edges (255, 255, 1) do not form a Pythagorean triple.
+Received request from client: 112
+NO: The last three edges (255, 1, 0) do not form a Pythagorean triple.
+Client disconnected
+Accepted new connection from 127.0.0.1:39578
+Accepted new connection from 127.0.0.1:39586
+Received request from client: 222
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 178
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:39594
+Received request from client: 185
+NO: The last three edges (0, 0, 255) do not form a Pythagorean triple.
+Received request from client: 254
+NO: The last three edges (0, 255, 255) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:39608
+Received request from client: 25
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 163
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Accepted new connection from 127.0.0.1:39624
+Received request from client: 215
+NO: The last three edges (255, 255, 1) do not form a Pythagorean triple.
+Received request from client: 128
+NO: The last three edges (255, 1, 0) do not form a Pythagorean triple.
+Received request from client: 68
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 82
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 85
+NO: The last three edges (0, 0, 255) do not form a Pythagorean triple.
+Received request from client: 170
+NO: The last three edges (0, 255, 255) do not form a Pythagorean triple.
+Received request from client: 30
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 194
+NO: The last three edges (255, 255, 255) do not form a Pythagorean triple.
+Received request from client: 51
+NO: The last three edges (255, 255, 1) do not form a Pythagorean triple.
+Received request from client: 134
+NO: The last three edges (255, 1, 0) do not form a Pythagorean triple.
+Received request from client: 82
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 115
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 232
+NO: The last three edges (0, 0, 4) do not form a Pythagorean triple.
+Received request from client: 241
+NO: The last three edges (0, 4, 0) do not form a Pythagorean triple.
+Received request from client: 137
+NO: The last three edges (4, 0, 0) do not form a Pythagorean triple.
+Received request from client: 106
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 44
+NO: The last three edges (0, 0, 1) do not form a Pythagorean triple.
+Received request from client: 91
+NO: The last three edges (0, 1, 0) do not form a Pythagorean triple.
+Received request from client: 183
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 154
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 101
+NO: The last three edges (0, 0, 6) do not form a Pythagorean triple.
+Received request from client: 54
+NO: The last three edges (0, 6, 0) do not form a Pythagorean triple.
+Received request from client: 94
+NO: The last three edges (6, 0, 0) do not form a Pythagorean triple.
+Received request from client: 17
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 61
+NO: The last three edges (0, 0, 1) do not form a Pythagorean triple.
+Received request from client: 184
+NO: The last three edges (0, 1, 0) do not form a Pythagorean triple.
+Received request from client: 5
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 146
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 195
+NO: The last three edges (0, 0, 7) do not form a Pythagorean triple.
+Received request from client: 95
+NO: The last three edges (0, 7, 0) do not form a Pythagorean triple.
+Received request from client: 33
+NO: The last three edges (7, 0, 0) do not form a Pythagorean triple.
+Received request from client: 214
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 150
+NO: The last three edges (0, 0, 1) do not form a Pythagorean triple.
+Received request from client: 188
+NO: The last three edges (0, 1, 0) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 12
+NO: The last three edges (1, 0, 0) do not form a Pythagorean triple.
+Received request from client: 13
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 236
+NO: The last three edges (0, 0, 8) do not form a Pythagorean triple.
+Received request from client: 13
+NO: The last three edges (0, 8, 0) do not form a Pythagorean triple.
+Received request from client: 129
+NO: The last three edges (8, 0, 0) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 7
+NO: The last three edges (0, 0, 0) do not form a Pythagorean triple.
+Received request from client: 89
+NO: The last three edges (0, 0, 1) do not form a Pythagorean triple.
+Client disconnected
+Received request from client: 94
+NO: The last three edges (0, 1, 0) do not form a Pythagorean triple.
+Received request from client: 115
+NO: The last three edges (1, 0, 1) do not form a Pythagorean triple.
+Received request from client: 227
+NO: The last three edges (0, 1, 0) do not form a Pythagorean triple.
+Client disconnected
