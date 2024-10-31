@@ -29,7 +29,7 @@ void write_result_to_file(unsigned int a, unsigned int b, unsigned int c, int is
     dup2(file_fd, STDOUT_FILENO);
 
     // Debugging output to confirm writing
-    printf("Writing to file: Sides: %u %u %u - %s\n", a, b, c, is_pythagorean ? "YES" : "NO");
+    printf("%u %u %u - %s\n", a, b, c, is_pythagorean ? "YES" : "NO");
 
     dup2(stdout_backup, STDOUT_FILENO);
     close(stdout_backup);
