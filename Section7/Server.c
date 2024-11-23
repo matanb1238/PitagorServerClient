@@ -4,194 +4,79 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <arpa/inet.h>
-#include <sys/socket.h>
-#include <errno.h>
+#include <time.h>
 
-#define PORT 8080
-#define BUFFER_SIZE 1024
-#define MAX_CLIENTS 10
-#define THREAD_POOL_SIZE 3
-#define REPORT_INTERVAL 10
+#define SERVER_IP "127.0.0.1"
+#define SERVER_PORT 8080
+#define NUM_CLIENTS 5
+#define NUM_EDGES 15
 
-// Mutex and condition variable
-pthread_mutex_t queue_mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t queue_cond = PTHREAD_COND_INITIALIZER;
+typedef struct ClientArgs {
+    int client_id;
+} ClientArgs;
 
-// Job structure
-typedef struct Job {
-    int client_fd;
-    struct Job* next;
-} Job;
+// Function for the client thread
+void* client_thread(void* arg) {
+    ClientArgs* args = (ClientArgs*)arg;
+    int client_id = args->client_id;
 
-// Global job queue
-Job* job_queue = NULL;
+    int sock = 0;
+    struct sockaddr_in serv_addr;
 
-// Pythagorean triple counter
-int pythagorean_count = 0;
-
-// Function to check if a triple is Pythagorean
-int is_pythagorean_triple(unsigned int a, unsigned int b, unsigned int c) {
-    return (a * a + b * b == c * c) || (a * a + c * c == b * b) || (b * b + c * c == a * a);
-}
-
-// Function to handle client requests
-void handle_client_request(int client_fd) {
-    char buffer[BUFFER_SIZE];
-    int bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
-    if (bytes_received > 0) {
-        buffer[bytes_received] = '\0';
-        unsigned int a, b, c;
-        if (sscanf(buffer, "%u %u %u", &a, &b, &c) == 3) {
-            int result = is_pythagorean_triple(a, b, c);
-
-            // Update Pythagorean triple counter
-            pthread_mutex_lock(&queue_mutex);
-            if (result) {
-                pythagorean_count++;
-            }
-            pthread_mutex_unlock(&queue_mutex);
-
-            // Send response to client
-            char response[100];
-            snprintf(response, sizeof(response), "Sides: %u %u %u - %s\n", 
-                     a, b, c, result ? "Pythagorean" : "Not Pythagorean");
-            send(client_fd, response, strlen(response), 0);
-        }
-    }
-    close(client_fd);
-}
-
-// Worker thread function
-void* worker_thread(void* arg) {
-    while (1) {
-        pthread_mutex_lock(&queue_mutex);
-
-        // Wait for a job to be available
-        while (job_queue == NULL) {
-            pthread_cond_wait(&queue_cond, &queue_mutex);
-        }
-
-        // Dequeue a job
-        Job* job = job_queue;
-        job_queue = job_queue->next;
-        pthread_mutex_unlock(&queue_mutex);
-
-        // Process the job
-        handle_client_request(job->client_fd);
-        free(job);
-    }
-    return NULL;
-}
-
-// Supervisor thread function
-void* supervisor_thread(void* arg) {
-    while (1) {
-        sleep(1); // Periodic check (adjust time as needed)
-
-        pthread_mutex_lock(&queue_mutex);
-        if (pythagorean_count > 0 && pythagorean_count % REPORT_INTERVAL == 0) {
-            printf("Supervisor: Pythagorean triples found so far: %d\n", pythagorean_count);
-        }
-        pthread_mutex_unlock(&queue_mutex);
-    }
-    return NULL;
-}
-
-// Function to enqueue a job
-void enqueue_job(int client_fd) {
-    Job* new_job = malloc(sizeof(Job));
-    if (!new_job) {
-        perror("malloc");
-        close(client_fd);
-        return;
-    }
-    new_job->client_fd = client_fd;
-    new_job->next = NULL;
-
-    pthread_mutex_lock(&queue_mutex);
-
-    if (job_queue == NULL) {
-        job_queue = new_job;
-    } else {
-        Job* temp = job_queue;
-        while (temp->next != NULL) {
-            temp = temp->next;
-        }
-        temp->next = new_job;
+    // Create socket
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        perror("Socket creation error");
+        pthread_exit(NULL);
     }
 
-    pthread_cond_signal(&queue_cond);
-    pthread_mutex_unlock(&queue_mutex);
+    serv_addr.sin_family = AF_INET;
+    serv_addr.sin_port = htons(SERVER_PORT);
+
+    // Convert IPv4 and IPv6 addresses from text to binary form
+    if (inet_pton(AF_INET, SERVER_IP, &serv_addr.sin_addr) <= 0) {
+        printf("Invalid address or address not supported\n");
+        pthread_exit(NULL);
+    }
+
+    // Connect to server
+    if (connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0) {
+        printf("Connection to server failed for client %d\n", client_id);
+        pthread_exit(NULL);
+    }
+
+    // Seed random number generator
+    srand(time(NULL) + client_id); // Seed with client_id to ensure different sequences for each client
+
+    // Send random edges to server
+    for (int i = 0; i < NUM_EDGES; i++) {
+        int edge = rand() % 5 + 1;  // Generate random number between 1 and 30
+        char buffer[1024];
+        snprintf(buffer, sizeof(buffer), "%d", edge);
+        send(sock, buffer, strlen(buffer), 0);
+        printf("Client %d: Sent edge %d\n", client_id, edge);
+        sleep(1); // Small delay between sends to simulate real-world behavior
+    }
+
+    close(sock);
+    free(arg);
+    pthread_exit(NULL);
 }
 
 int main() {
-    int server_fd, client_fd;
-    struct sockaddr_in server_addr, client_addr;
-    socklen_t client_len = sizeof(client_addr);
+    pthread_t clients[NUM_CLIENTS];
 
-    // Create server socket
-    server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_fd == -1) {
-        perror("socket");
-        exit(EXIT_FAILURE);
+    // Create and launch client threads
+    for (int i = 0; i < NUM_CLIENTS; i++) {
+        ClientArgs* args = (ClientArgs*)malloc(sizeof(ClientArgs));
+        args->client_id = i + 1;
+
+        pthread_create(&clients[i], NULL, client_thread, (void*)args);
     }
 
-    // Set up server address
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(PORT);
-    server_addr.sin_addr.s_addr = INADDR_ANY;
-
-    // Bind socket
-    if (bind(server_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
-        perror("bind");
-        close(server_fd);
-        exit(EXIT_FAILURE);
+    // Wait for all threads to finish
+    for (int i = 0; i < NUM_CLIENTS; i++) {
+        pthread_join(clients[i], NULL);
     }
-
-    // Listen for connections
-    if (listen(server_fd, MAX_CLIENTS) == -1) {
-        perror("listen");
-        close(server_fd);
-        exit(EXIT_FAILURE);
-    }
-
-    printf("Server listening on port %d...\n", PORT);
-
-    // Create thread pool
-    pthread_t thread_pool[THREAD_POOL_SIZE];
-    for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-        if (pthread_create(&thread_pool[i], NULL, worker_thread, NULL) != 0) {
-            perror("pthread_create");
-            close(server_fd);
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    // Create supervisor thread
-    pthread_t supervisor;
-    if (pthread_create(&supervisor, NULL, supervisor_thread, NULL) != 0) {
-        perror("pthread_create");
-        close(server_fd);
-        exit(EXIT_FAILURE);
-    }
-
-    // Accept and enqueue client requests
-    while (1) {
-        client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
-        if (client_fd == -1) {
-            perror("accept");
-            continue;
-        }
-        printf("New client connected: %d\n", client_fd);
-        enqueue_job(client_fd);
-    }
-
-    // Cleanup (never reached in this example)
-    close(server_fd);
-    for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-        pthread_join(thread_pool[i], NULL);
-    }
-    pthread_join(supervisor, NULL);
 
     return 0;
 }
