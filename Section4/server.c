@@ -3,137 +3,133 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <poll.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
+#include <poll.h>
 #include <fcntl.h>
+#include <errno.h>
 
-#define PORT 8080
-#define BUFFER_SIZE 1024
-#define MAX_CLIENTS 10
+#define PORT 12345
+#define MAX_CLIENTS 100
+#define BUFFER_SIZE 16
+#define LOG_FILE "pythagorean_log.txt"
 
-pthread_mutex_t lock;
+// Mutex for log file access
+pthread_mutex_t file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-void write_result_to_file(unsigned int a, unsigned int b, unsigned int c, int is_pythagorean) {
-    pthread_mutex_lock(&lock);
+// Function to check if three numbers form a Pythagorean triple
+int is_pythagorean_triple(int a, int b, int c) {
+    return (a * a + b * b == c * c) ||
+           (b * b + c * c == a * a) ||
+           (c * c + a * a == b * b);
+}
 
-    int file_fd = open("triangle_results.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
-    if (file_fd == -1) {
-        perror("open");
-        pthread_mutex_unlock(&lock);
+// Function to log results
+void log_result(int a, int b, int c, int result) {
+    pthread_mutex_lock(&file_mutex);
+
+    int stdout_copy = dup(STDOUT_FILENO);
+    int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (log_fd < 0) {
+        perror("Error opening log file");
+        pthread_mutex_unlock(&file_mutex);
         return;
     }
 
-    int stdout_backup = dup(STDOUT_FILENO);
-    dup2(file_fd, STDOUT_FILENO);
+    dup2(log_fd, STDOUT_FILENO);
+    close(log_fd);
 
-    // Debugging output to confirm writing
-    printf("%u %u %u - %s\n", a, b, c, is_pythagorean ? "YES" : "NO");
+    printf("Triangle: (%d, %d, %d) - %s\n", a, b, c, result ? "Pythagorean Triple" : "Not a Triple");
+    fflush(stdout);
 
-    dup2(stdout_backup, STDOUT_FILENO);
-    close(stdout_backup);
-    close(file_fd);
+    dup2(stdout_copy, STDOUT_FILENO);
+    close(stdout_copy);
 
-    pthread_mutex_unlock(&lock);
+    pthread_mutex_unlock(&file_mutex);
 }
 
-void check_triangle_and_write(const char *buffer) {
-    unsigned int a, b, c;
-    if (sscanf(buffer, "%u %u %u", &a, &b, &c) == 3) {
-        int is_pythagorean = (a * a + b * b == c * c) ||
-                             (a * a + c * c == b * b) ||
-                             (b * b + c * c == a * a);
-        write_result_to_file(a, b, c, is_pythagorean);
-    } else {
-        fprintf(stderr, "Error parsing message: %s\n", buffer);
-    }
-}
+// Thread function to handle client communication
+void *handle_client(void *arg) {
+    int client_fd = *(int *)arg;
+    free(arg);
 
-void *poll_for_clients(void *arg) {
-    int server_fd = *(int *)arg;
-    struct pollfd client_fds[MAX_CLIENTS];
-    int client_count = 0;
-
-    client_fds[0].fd = server_fd;
-    client_fds[0].events = POLLIN;
+    int sides[3] = {0};
+    int side_count = 0;
+    char buffer[BUFFER_SIZE] = {0};
 
     while (1) {
-        int poll_count = poll(client_fds, client_count + 1, -1);
-        if (poll_count == -1) {
-            perror("poll");
-            continue;
+        int bytes_read = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
+        if (bytes_read <= 0) {
+            if (bytes_read < 0) perror("Error reading from client");
+            break;
         }
 
-        for (int i = 0; i <= client_count; i++) {
-            if (client_fds[i].revents & POLLIN) {
-                if (client_fds[i].fd == server_fd) {
-                    int client_fd = accept(server_fd, NULL, NULL);
-                    if (client_fd == -1) {
-                        perror("accept");
-                    } else {
-                        printf("New client connected: FD %d\n", client_fd);
-                        if (client_count < MAX_CLIENTS) {
-                            client_fds[++client_count].fd = client_fd;
-                            client_fds[client_count].events = POLLIN;
-                        } else {
-                            perror("Max clients reached");
-                            close(client_fd);
-                        }
-                    }
-                } else {
-                    char buffer[BUFFER_SIZE];
-                    int bytes_received = recv(client_fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+        buffer[bytes_read] = '\0';
+        int side = atoi(buffer);
 
-                    if (bytes_received <= 0) {
-                        close(client_fds[i].fd);
-                        client_fds[i] = client_fds[client_count--];
-                        printf("Client disconnected: FD %d\n", client_fds[i].fd);
-                    } else {
-                        buffer[bytes_received] = '\0';
-                        printf("Received message: %s\n", buffer);
-                        check_triangle_and_write(buffer);
-                    }
-                }
-            }
+        sides[side_count % 3] = side;
+        side_count++;
+
+        if (side_count >= 3) {
+            int a = sides[0], b = sides[1], c = sides[2];
+            int result = is_pythagorean_triple(a, b, c);
+            log_result(a, b, c, result);
         }
     }
+
+    close(client_fd);
     return NULL;
 }
 
+// Main server function
 int main() {
-    int server_fd;
-    struct sockaddr_in server_addr;
+    int server_fd, new_socket;
+    struct sockaddr_in address;
+    socklen_t addr_len = sizeof(address);
 
-    server_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (server_fd == -1) {
-        perror("socket");
+    // Create socket
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+        perror("Socket failed");
         exit(EXIT_FAILURE);
     }
 
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons(PORT);
-    server_addr.sin_addr.s_addr = INADDR_ANY;
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(PORT);
 
-    if (bind(server_fd, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1) {
-        perror("bind");
+    // Bind socket
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+        perror("Bind failed");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
-    if (listen(server_fd, MAX_CLIENTS) == -1) {
-        perror("listen");
+    // Listen for incoming connections
+    if (listen(server_fd, MAX_CLIENTS) < 0) {
+        perror("Listen failed");
         close(server_fd);
         exit(EXIT_FAILURE);
     }
 
-    pthread_mutex_init(&lock, NULL);
+    printf("Server listening on port %d\n", PORT);
 
-    pthread_t poll_thread;
-    pthread_create(&poll_thread, NULL, poll_for_clients, &server_fd);
-    pthread_join(poll_thread, NULL);
+    while (1) {
+        new_socket = accept(server_fd, (struct sockaddr *)&address, &addr_len);
+        if (new_socket < 0) {
+            perror("Accept failed");
+            continue;
+        }
 
-    pthread_mutex_destroy(&lock);
+        printf("Accepted new connection\n");
+
+        // Create thread to handle client
+        pthread_t thread_id;
+        int *client_fd = malloc(sizeof(int));
+        *client_fd = new_socket;
+        pthread_create(&thread_id, NULL, handle_client, client_fd);
+        pthread_detach(thread_id);
+    }
+
     close(server_fd);
     return 0;
 }
