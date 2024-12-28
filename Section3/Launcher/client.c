@@ -54,7 +54,7 @@ void send_random_integer(int sockfd, int client_id)
     unsigned char random_num;
     for (int i = 0; i < 10; i++) {
         // Generate a random unsigned char
-        random_num = rand() % 256 + 1;
+        random_num = rand() % 5 + 1;
         printf("Client %d Sending: %d\n", client_id, random_num); // Include client ID
 
         // Send the random number to the server
