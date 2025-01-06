@@ -1,7 +1,7 @@
-CC=gcc
-CFLAGS=-Wall -g
+CC = gcc
+CFLAGS = -Wall -g -pthread
 
-all: client launcher
+all: client launcher server
 
 client: client.c
 	$(CC) $(CFLAGS) client.c -o client
@@ -9,5 +9,8 @@ client: client.c
 launcher: launcher.c
 	$(CC) $(CFLAGS) launcher.c -o launcher
 
+server: server.c thread_pool.c
+	$(CC) $(CFLAGS) server.c thread_pool.c -o server
+
 clean:
-	rm client launcher
+	rm -f client launcher server

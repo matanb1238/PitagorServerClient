@@ -7,4 +7,4 @@ pitagor: Pitagor.c
 	$(CC) $(CFLAGS) Pitagor.c -o Pitagor
 
 clean:
-	rm server
+	rm Pitagor

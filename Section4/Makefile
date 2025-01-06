@@ -1,7 +1,7 @@
 CC=gcc
 CFLAGS=-Wall -g
 
-all: client launcher
+all: client launcher server
 
 client: client.c
 	$(CC) $(CFLAGS) client.c -o client
@@ -9,5 +9,8 @@ client: client.c
 launcher: launcher.c
 	$(CC) $(CFLAGS) launcher.c -o launcher
 
+server: server.c
+	$(CC) $(CFLAGS) server.c -o server	
+
 clean:
-	rm client launcher
+	rm client launcher server

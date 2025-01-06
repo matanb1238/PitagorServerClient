@@ -1,13 +1,10 @@
 CC=gcc
 CFLAGS=-Wall -g
 
-all: client launcher
+all: thread_pool
 
-client: client.c
-	$(CC) $(CFLAGS) client.c -o client
-
-launcher: launcher.c
-	$(CC) $(CFLAGS) launcher.c -o launcher
+client: thread_pool.c
+	$(CC) $(CFLAGS) thread_pool.c -o thread_pool
 
 clean:
-	rm client launcher
+	rm thread_pool
