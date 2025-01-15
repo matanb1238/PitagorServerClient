@@ -31,6 +31,7 @@ void log_to_file(unsigned char *requests, int count, int result) {
         perror("Failed to open log file");
         exit(EXIT_FAILURE);
     }
+    
     dup2(log_fd, STDOUT_FILENO);  // Redirect stdout to the file
     close(log_fd);
 
@@ -49,6 +50,14 @@ int main() {
     struct sockaddr_in serverAddr;
     unsigned char requests[MAX_REQUESTS];
     int requests_count = 0;
+
+    // Clean the log file only once, when the server starts
+    int log_fd = open("results.log", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (log_fd < 0) {
+        perror("Failed to clean log file");
+        exit(EXIT_FAILURE);
+    }
+    close(log_fd); // Close the file after truncation
 
     // Create a socket
     if ((serverSocketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -86,7 +95,7 @@ int main() {
     while (1) {
         // Initialize the fds for polling
         for (int i = 1; i <= client_count; i++) {
-            fds[i].fd = fds[i].fd;  // Retain client file descriptors
+            fds[i].fd = fds[i].fd; // Retain client file descriptors
             fds[i].events = POLLIN;
         }
 
@@ -128,7 +137,7 @@ int main() {
                         perror("Error receiving request");
                     }
                     close(fds[i].fd);
-                    fds[i].fd = -1;  // Mark this fd as closed
+                    fds[i].fd = -1; // Mark this fd as closed
                 } else {
                     printf("Received request from client: %u\n", buffer);
 

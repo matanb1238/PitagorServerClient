@@ -17,23 +17,6 @@ Triangle: (16, 17, 18) - Not a Triple
 Triangle: (19, 17, 18) - Not a Triple
 Triangle: (19, 20, 18) - Not a Triple
 Triangle: (1, 2, 3) - Not a Triple
-Triangle: (4, 2, 3) - Not a Triple
-Triangle: (4, 5, 3) - Pythagorean Triple
-Triangle: (4, 5, 6) - Not a Triple
-Triangle: (7, 5, 6) - Not a Triple
-Triangle: (7, 8, 6) - Not a Triple
-Triangle: (7, 8, 9) - Not a Triple
-Triangle: (10, 8, 9) - Not a Triple
-Triangle: (10, 11, 9) - Not a Triple
-Triangle: (10, 11, 12) - Not a Triple
-Triangle: (13, 11, 12) - Not a Triple
-Triangle: (13, 14, 12) - Not a Triple
-Triangle: (13, 14, 15) - Not a Triple
-Triangle: (16, 14, 15) - Not a Triple
-Triangle: (16, 17, 15) - Not a Triple
-Triangle: (16, 17, 18) - Not a Triple
-Triangle: (19, 17, 18) - Not a Triple
-Triangle: (19, 20, 18) - Not a Triple
 Triangle: (1, 2, 3) - Not a Triple
 Triangle: (4, 2, 3) - Not a Triple
 Triangle: (4, 5, 3) - Pythagorean Triple

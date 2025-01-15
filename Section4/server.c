@@ -87,6 +87,14 @@ int main() {
     struct sockaddr_in address;
     socklen_t addr_len = sizeof(address);
 
+    // Clear the log file when the server starts
+    int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (log_fd < 0) {
+        perror("Error clearing log file");
+        exit(EXIT_FAILURE);
+    }
+    close(log_fd);
+
     // Create socket
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
         perror("Socket failed");
@@ -133,3 +141,4 @@ int main() {
     close(server_fd);
     return 0;
 }
+

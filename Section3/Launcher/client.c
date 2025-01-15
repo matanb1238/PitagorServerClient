@@ -55,7 +55,6 @@ void send_random_integer(int sockfd, int client_id)
     for (int i = 0; i < 10; i++) {
         // Generate a random unsigned char
         random_num = rand() % 5 + 1;
-        printf("Client %d Sending: %d\n", client_id, random_num); // Include client ID
 
         // Send the random number to the server
         send(sockfd, &random_num, sizeof(random_num), 0);
@@ -77,7 +76,6 @@ void receive_response(int sockfd)
     }
 
     buffer[bytes_received] = '\0';
-    printf("Received: %s\n", buffer);
 }
 
 int main(int argc, char *argv[])
