@@ -9,6 +9,10 @@
 #include "client.h"
 
 #define BUFFER_SIZE 1024
+#define NUM_MESSAGES 50
+#define RANDOM_MAX 17
+
+
 
 int create_connection(const char *server_address, const char *server_port)
 {
@@ -76,35 +80,31 @@ void receive_response(int sockfd)
 
 int main(int argc, char *argv[])
 {
-    if (argc != 5)
+    if (argc != 4)
     {
-        fprintf(stderr, "Usage: %s <server_address> <server_port> <seed> <number_of_requests>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <server_address> <server_port> <seed>\n", argv[0]);
         exit(EXIT_FAILURE);
     }
 
     const char *server_address = argv[1];
     const char *server_port = argv[2];
     const unsigned int seed = atoi(argv[3]);
-    const int number_of_requests = atoi(argv[4]);
 
-    printf("Server Address: %s\nServer Port: %s\nSeed: %u\nNumber of Requests: %d\n", 
-           server_address, server_port, seed, number_of_requests);
+    printf("Server Address: %s\nServer Port: %s\nSeed: %u\n", 
+           server_address, server_port,seed);
 
     int sockfd = create_connection(server_address, server_port);
 
     srand(seed);
 
-    for (int i = 0; i < number_of_requests; i++)
+    for (int i = 0; i < NUM_MESSAGES; i++)
     {
-        unsigned int random_num = rand() % 100 + 1;
+        unsigned int random_num = rand() % RAND_MAX + 1;
         printf("Sending random number: %u\n", random_num);
         send_random_integer(sockfd, random_num);
 
         // Receive response from the server
         receive_response(sockfd);
-
-        // Optional delay for better readability
-        sleep(1);
     }
 
     // Close the socket
