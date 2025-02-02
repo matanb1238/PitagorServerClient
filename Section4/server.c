@@ -5,9 +5,9 @@
 #include <pthread.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <poll.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <time.h>
 
 #define PORT 12345
 #define MAX_CLIENTS 100
@@ -28,6 +28,11 @@ int is_pythagorean_triple(int a, int b, int c) {
 void log_result(int a, int b, int c, int result) {
     pthread_mutex_lock(&file_mutex);
 
+    // Get the current time for logging
+    time_t now = time(NULL);
+    char *time_str = ctime(&now);
+    time_str[strlen(time_str) - 1] = '\0'; // Remove the newline character
+
     int stdout_copy = dup(STDOUT_FILENO);
     int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (log_fd < 0) {
@@ -39,7 +44,8 @@ void log_result(int a, int b, int c, int result) {
     dup2(log_fd, STDOUT_FILENO);
     close(log_fd);
 
-    printf("Triangle: (%d, %d, %d) - %s\n", a, b, c, result ? "Pythagorean Triple" : "Not a Triple");
+    // Log to both the console and file
+    printf("[%s] Triangle: (%d, %d, %d) - %s\n", time_str, a, b, c, result ? "Pythagorean Triple" : "Not a Triple");
     fflush(stdout);
 
     dup2(stdout_copy, STDOUT_FILENO);
@@ -55,7 +61,13 @@ void *handle_client(void *arg) {
 
     int sides[3] = {0};
     int side_count = 0;
-    char buffer[BUFFER_SIZE] = {0};
+    char buffer[BUFFER_SIZE];
+
+    // Log the start time of the client
+    time_t start_time = time(NULL);
+    char *start_time_str = ctime(&start_time);
+    start_time_str[strlen(start_time_str) - 1] = '\0'; // Remove the newline character
+    printf("[%s] Client started handling\n", start_time_str);
 
     while (1) {
         int bytes_read = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
@@ -63,6 +75,8 @@ void *handle_client(void *arg) {
             if (bytes_read < 0) perror("Error reading from client");
             break;
         }
+
+        printf("Received: %s\n", buffer);
 
         buffer[bytes_read] = '\0';
         int side = atoi(buffer);
@@ -76,6 +90,12 @@ void *handle_client(void *arg) {
             log_result(a, b, c, result);
         }
     }
+
+    // Log the end time of the client handling
+    time_t end_time = time(NULL);
+    char *end_time_str = ctime(&end_time);
+    end_time_str[strlen(end_time_str) - 1] = '\0'; // Remove the newline character
+    printf("[%s] Client finished handling\n", end_time_str);
 
     close(client_fd);
     return NULL;
@@ -128,7 +148,11 @@ int main() {
             continue;
         }
 
-        printf("Accepted new connection\n");
+        // Log the time of accepting a new connection
+        time_t new_connection_time = time(NULL);
+        char *new_connection_str = ctime(&new_connection_time);
+        new_connection_str[strlen(new_connection_str) - 1] = '\0'; // Remove the newline character
+        printf("[%s] Accepted new connection\n", new_connection_str);
 
         // Create thread to handle client
         pthread_t thread_id;
@@ -141,4 +165,3 @@ int main() {
     close(server_fd);
     return 0;
 }
-

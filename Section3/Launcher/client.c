@@ -21,7 +21,7 @@ void receive_response(int sockfd) {
     printf("Server response: %s\n", buffer);
 }
 
-void send_random_integer(int sockfd, int client_id) {
+void send_random_integer(int sockfd) {
     unsigned char random_num;
     for (int i = 0; i < 10; i++) {
         random_num = rand() % 5 + 1;
@@ -53,7 +53,7 @@ int main() {
 
     printf("Connected to server at %s:%d\n", SERVER_IP, SERVER_PORT);
     
-    send_random_integer(sockfd, 1);
+    send_random_integer(sockfd);
 
     close(sockfd);
     return 0;

@@ -8,10 +8,22 @@
 #define PORT 12345
 #define NUM_MESSAGES 20
 
+void send_random_integer(int sockfd) {
+    char buffer[16];
+    unsigned char random_num;
+    for (int i = 0; i < NUM_MESSAGES; i++) {
+        random_num = rand() % 5 + 1;
+        snprintf(buffer, sizeof(buffer), "%hhu", random_num);
+        printf("Sending: %s\n", buffer);
+        send(sockfd, buffer, strlen(buffer), 0);
+        usleep(1000); // Prevent spamming the server
+    }
+}
+
+
 int main() {
     int sock;
     struct sockaddr_in serv_addr;
-    char buffer[16];
 
     // Create socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -36,11 +48,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    for (int i = 1; i <= NUM_MESSAGES; i++) {
-        snprintf(buffer, sizeof(buffer), "%d", i);
-        send(sock, buffer, strlen(buffer), 0);
-        usleep(100000); // Sleep for 100ms
-    }
+    send_random_integer(sock);
 
     close(sock);
     return 0;
