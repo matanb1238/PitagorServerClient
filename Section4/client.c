@@ -16,7 +16,7 @@ void send_random_integer(int sockfd) {
         snprintf(buffer, sizeof(buffer), "%hhu", random_num);
         printf("Sending: %s\n", buffer);
         send(sockfd, buffer, strlen(buffer), 0);
-        usleep(1000); // Prevent spamming the server
+        usleep(100000); // Prevent spamming the server
     }
 }
 
@@ -24,12 +24,15 @@ void send_random_integer(int sockfd) {
 int main() {
     int sock;
     struct sockaddr_in serv_addr;
-
+    
     // Create socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         perror("Socket creation error");
         exit(EXIT_FAILURE);
     }
+
+    // seed by process id
+    srand(getpid());
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
