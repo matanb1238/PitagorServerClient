@@ -13,8 +13,8 @@ void send_random_integer(int sockfd) {
     unsigned char random_num;
     for (int i = 0; i < NUM_MESSAGES; i++) {
         random_num = rand() % 5 + 1;
-        snprintf(buffer, sizeof(buffer), "%hhu", random_num);
-        printf("Sending: %s\n", buffer);
+        snprintf(buffer, sizeof(buffer), "%hhu\n", random_num);
+        printf("Sending: %s", buffer);
         send(sockfd, buffer, strlen(buffer), 0);
         usleep(100000); // Prevent spamming the server
     }

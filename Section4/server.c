@@ -14,8 +14,11 @@
 #define BUFFER_SIZE 16
 #define LOG_FILE "pythagorean_log.txt"
 
-// Mutex for log file access
+// Mutex for log file access and shared data protection
 pthread_mutex_t file_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sides_mutex = PTHREAD_MUTEX_INITIALIZER;
+int sides[3] = {0};
+int side_count = 0;
 
 // Function to check if three numbers form a Pythagorean triple
 int is_pythagorean_triple(int a, int b, int c) {
@@ -59,43 +62,44 @@ void *handle_client(void *arg) {
     int client_fd = *(int *)arg;
     free(arg);
 
-    int sides[3] = {0};
-    int side_count = 0;
-    char buffer[BUFFER_SIZE];
+    char buffer[BUFFER_SIZE] = {0};
 
-    // Log the start time of the client
-    time_t start_time = time(NULL);
-    char *start_time_str = ctime(&start_time);
-    start_time_str[strlen(start_time_str) - 1] = '\0'; // Remove the newline character
-    printf("[%s] Client started handling\n", start_time_str);
-
+    int bytes_received;
+    char *message;
     while (1) {
-        int bytes_read = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
-        if (bytes_read <= 0) {
-            if (bytes_read < 0) perror("Error reading from client");
-            break;
-        }
+        while ((bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0)) > 0) {
+            buffer[bytes_received] = '\0';  // Null-terminate the received data
 
-        printf("Received: %s\n", buffer);
+            message = strtok(buffer, "\n");  // Extract messages using newline as delimiter
+            while (message != NULL) {
+                printf("Received: %s\n", message);
+                message = strtok(NULL, "\n");  // Get next message in case of multiple
+            }
 
-        buffer[bytes_read] = '\0';
-        int side = atoi(buffer);
+            int side = atoi(buffer);  // Convert buffer to an integer side
 
-        sides[side_count % 3] = side;
-        side_count++;
+            // Update sides array and overwrite the oldest side
+            pthread_mutex_lock(&sides_mutex);
+            sides[side_count % 3] = side;  // Overwrite the oldest side (circular behavior)
+            side_count++;
 
-        if (side_count >= 3) {
-            int a = sides[0], b = sides[1], c = sides[2];
-            int result = is_pythagorean_triple(a, b, c);
-            log_result(a, b, c, result);
+            // Log the sides each time a new side is received
+            printf("Sides: ");
+            for (int i = 0; i < 3; i++) {
+                printf("%d ", sides[i]);
+            }
+            printf("\n");
+
+            // After receiving at least 3 sides, check the Pythagorean triple
+            if (side_count >= 3) {
+                int a = sides[0], b = sides[1], c = sides[2];
+                int result = is_pythagorean_triple(a, b, c);
+                log_result(a, b, c, result);
+            }
+
+            pthread_mutex_unlock(&sides_mutex);
         }
     }
-
-    // Log the end time of the client handling
-    time_t end_time = time(NULL);
-    char *end_time_str = ctime(&end_time);
-    end_time_str[strlen(end_time_str) - 1] = '\0'; // Remove the newline character
-    printf("[%s] Client finished handling\n", end_time_str);
 
     close(client_fd);
     return NULL;
@@ -152,7 +156,7 @@ int main() {
         time_t new_connection_time = time(NULL);
         char *new_connection_str = ctime(&new_connection_time);
         new_connection_str[strlen(new_connection_str) - 1] = '\0'; // Remove the newline character
-        printf("[%s] Accepted new connection\n", new_connection_str);
+        //printf("[%s] Accepted new connection\n", new_connection_str);
 
         // Create thread to handle client
         pthread_t thread_id;
