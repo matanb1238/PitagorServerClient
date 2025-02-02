@@ -1,27 +1,75 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <sys/socket.h>
 #include <string.h>
-#include <stdint.h>
-#include "thread_pool.h"
+#include <unistd.h>
+#include <pthread.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <time.h>
+#include <arpa/inet.h>
 
 #define PORT 8080
+#define MAX_CLIENTS 100
 #define BUFFER_SIZE 1024
-#define THREAD_POOL_SIZE 3  // Number of threads in the pool
+#define THREAD_POOL_SIZE 10
+#define LOG_FILE "pythagorean_log.txt"
 
-// Declare the thread pool functions (from the previous implementation)
+// Mutex for log file access and shared data protection
+pthread_mutex_t file_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t sides_mutex = PTHREAD_MUTEX_INITIALIZER;
+int sides[3] = {0};
+int side_count = 0;
+
+// Thread pool management
 void thread_pool_init(int num_threads);
 void thread_pool_add_task(void (*function)(void *), void *arg);
 void thread_pool_destroy();
 
-// Function to handle client requests
+// Function to check if three numbers form a Pythagorean triple
+int is_pythagorean_triple(int a, int b, int c) {
+    return (a * a + b * b == c * c) ||
+           (b * b + c * c == a * a) ||
+           (c * c + a * a == b * b);
+}
+
+// Function to log results
+void log_result(int a, int b, int c, int result) {
+    pthread_mutex_lock(&file_mutex);
+
+    // Get the current time for logging
+    time_t now = time(NULL);
+    char *time_str = ctime(&now);
+    time_str[strlen(time_str) - 1] = '\0'; // Remove the newline character
+
+    int stdout_copy = dup(STDOUT_FILENO);
+    int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (log_fd < 0) {
+        perror("Error opening log file");
+        pthread_mutex_unlock(&file_mutex);
+        return;
+    }
+
+    dup2(log_fd, STDOUT_FILENO);
+    close(log_fd);
+
+    // Log to both the console and file
+    printf("[%s] Triangle: (%d, %d, %d) - %s\n", time_str, a, b, c, result ? "Pythagorean Triple" : "Not a Triple");
+    fflush(stdout);
+
+    dup2(stdout_copy, STDOUT_FILENO);
+    close(stdout_copy);
+
+    pthread_mutex_unlock(&file_mutex);
+}
+
+// Function to handle client requests (combining both echo and Pythagorean checking)
 void handle_client_request(void *arg) {
     int client_fd = (int)(intptr_t)arg;  // Cast the void* back to int
-
     char buffer[BUFFER_SIZE];
+    char *message;
+
     while (1) {
         int bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
 
@@ -34,7 +82,37 @@ void handle_client_request(void *arg) {
         buffer[bytes_received] = '\0';  // Null-terminate the received data
         printf("Received from client: %s\n", buffer);
 
-        // Echo the message back to the client
+        message = strtok(buffer, "\n");  // Extract messages using newline as delimiter
+        while (message != NULL) {
+            printf("Received message: %s\n", message);
+            message = strtok(NULL, "\n");  // Get next message in case of multiple
+        }
+
+        // Convert buffer to an integer side
+        int side = atoi(buffer);
+
+        // Update sides array and overwrite the oldest side
+        pthread_mutex_lock(&sides_mutex);
+        sides[side_count % 3] = side;  // Overwrite the oldest side (circular behavior)
+        side_count++;
+
+        // Log the sides each time a new side is received
+        printf("Sides: ");
+        for (int i = 0; i < 3; i++) {
+            printf("%d ", sides[i]);
+        }
+        printf("\n");
+
+        // After receiving at least 3 sides, check the Pythagorean triple
+        if (side_count >= 3) {
+            int a = sides[0], b = sides[1], c = sides[2];
+            int result = is_pythagorean_triple(a, b, c);
+            log_result(a, b, c, result);
+        }
+
+        pthread_mutex_unlock(&sides_mutex);
+
+        // Echo the message back to the client (as per the first server's functionality)
         send(client_fd, buffer, bytes_received, 0);
     }
 }
