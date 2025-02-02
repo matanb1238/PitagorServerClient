@@ -9,8 +9,8 @@ client: client.c
 launcher: launcher.c
 	$(CC) $(CFLAGS) launcher.c -o launcher
 
-server: server.c thread_pool.c
-	$(CC) $(CFLAGS) server.c thread_pool.c -o server
+server: server.c ../Section6/thread_pool.c
+	$(CC) $(CFLAGS) server.c ../Section6/thread_pool.c -o server
 
 clean:
 	rm -f client launcher server
