@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <signal.h>
 
 #define PORT 8080
 #define BUFFER_SIZE 1024
@@ -24,6 +25,8 @@ int side_count = 0;
 int total_checked = 0;
 int pythagorean_count = 0;
 int reporting_started = 0;
+int server_fd;
+int running = 1;  // Control flag for the main loop
 
 // Function to check if three numbers form a Pythagorean triple
 int is_pythagorean_triple(int a, int b, int c) {
@@ -43,15 +46,20 @@ void log_result(int a, int b, int c, int result) {
 }
 
 void *report_thread_func(void *arg) {
-    while (1) {
+    while (running) {
         pthread_mutex_lock(&report_mutex);
-        while (!reporting_started) {
+        while (running && !reporting_started) {
             pthread_cond_wait(&report_cond, &report_mutex);
+        }
+        if (!running) {
+            pthread_mutex_unlock(&report_mutex);
+            break;
         }
         printf("[REPORT] Checked %d triangles, Found %d Pythagorean triples\n", total_checked, pythagorean_count);
         reporting_started = 0; // Reset flag
         pthread_mutex_unlock(&report_mutex);
     }
+    printf("[INFO] Report thread exiting...\n");
     return NULL;
 }
 
@@ -83,7 +91,7 @@ void handle_client_request(void *arg) {
             if (result) pythagorean_count++;
 
             // Start reporting thread only after checking 10 triangles
-            if (total_checked >= 10 && total_checked % 10 == 0) {
+            if (total_checked % 10 == 0) {
                 reporting_started = 1;
                 pthread_cond_signal(&report_cond);
             }
@@ -95,10 +103,37 @@ void handle_client_request(void *arg) {
     }
 }
 
+// Signal handler function
+void signal_handler(int signum) {
+    printf("\n[INFO] Caught SIGINT (Ctrl+C), shutting down server...\n");
+    
+    // Stop the reporting thread
+    running = 0;
+    
+    // Wake up the report thread if it's waiting
+    pthread_mutex_lock(&report_mutex);
+    pthread_cond_signal(&report_cond);
+    pthread_mutex_unlock(&report_mutex);
+
+    // Close the server socket to break accept()
+    close(server_fd);
+
+    // Destroy mutexes and condition variable
+    pthread_mutex_destroy(&file_mutex);
+    pthread_mutex_destroy(&sides_mutex);
+    pthread_mutex_destroy(&report_mutex);
+    pthread_cond_destroy(&report_cond);
+
+    exit(EXIT_SUCCESS);
+}
+
 int main() {
-    int server_fd, client_fd;
+    int client_fd;
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_len = sizeof(client_addr);
+
+    // Register SIGINT handler
+    signal(SIGINT, signal_handler);
     
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
@@ -127,10 +162,14 @@ int main() {
     pthread_t report_thread;
     pthread_create(&report_thread, NULL, report_thread_func, NULL);
     
+     // Make socket non-blocking
+    fcntl(server_fd, F_SETFL, O_NONBLOCK);
     while (1) {
         client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
         if (client_fd == -1) {
-            perror("accept");
+            if (errno == EINTR) {
+                break;  // Exit if interrupted by SIGINT
+            }
             continue;
         }
 
@@ -139,6 +178,6 @@ int main() {
         pthread_detach(client_thread);
     }
 
-    close(server_fd);
+    printf("[INFO] Server has shut down gracefully.\n");
     return 0;
 }
