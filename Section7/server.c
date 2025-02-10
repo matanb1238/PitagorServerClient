@@ -9,6 +9,8 @@
 #include <errno.h>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <pthread.h>
+#include "../Section6/thread_pool.h"  // Include the thread pool header
 
 #define PORT 8080
 #define BUFFER_SIZE 1024
@@ -68,8 +70,13 @@ void handle_client_request(void *arg) {
     char buffer[BUFFER_SIZE];
 
     while (1) {
-        int bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
+        int bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0);  // Blocking recv
         if (bytes_received <= 0) {
+            if (bytes_received == 0) {
+                printf("Client disconnected.\n");
+            } else {
+                perror("recv failed");
+            }
             close(client_fd);
             break;
         }
@@ -124,6 +131,9 @@ void signal_handler(int signum) {
     pthread_mutex_destroy(&report_mutex);
     pthread_cond_destroy(&report_cond);
 
+    // Destroy the thread pool before exiting
+    thread_pool_destroy();
+
     exit(EXIT_SUCCESS);
 }
 
@@ -134,7 +144,16 @@ int main() {
 
     // Register SIGINT handler
     signal(SIGINT, signal_handler);
-    
+
+    // Reset the result log file by opening it in write mode ("w")
+    FILE *log_file = fopen(LOG_FILE, "w");
+    if (log_file) {
+        fclose(log_file);  // Close the file immediately to reset it
+    } else {
+        perror("Failed to reset log file");
+        exit(EXIT_FAILURE);
+    }
+
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server_fd == -1) {
         perror("socket");
@@ -159,11 +178,13 @@ int main() {
 
     printf("Server listening on port %d...\n", PORT);
     
+    // Initialize the thread pool
+    thread_pool_init(THREAD_POOL_SIZE);
+
+    // Start the reporting thread
     pthread_t report_thread;
     pthread_create(&report_thread, NULL, report_thread_func, NULL);
-    
-     // Make socket non-blocking
-    fcntl(server_fd, F_SETFL, O_NONBLOCK);
+
     while (1) {
         client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
         if (client_fd == -1) {
@@ -173,11 +194,13 @@ int main() {
             continue;
         }
 
-        pthread_t client_thread;
-        pthread_create(&client_thread, NULL, (void *)handle_client_request, (void *)(intptr_t)client_fd);
-        pthread_detach(client_thread);
+        printf("New client connected.\n");
+
+        // Add the client handler to the thread pool
+        thread_pool_add_task(handle_client_request, (void *)(intptr_t)client_fd);
     }
 
     printf("[INFO] Server has shut down gracefully.\n");
     return 0;
 }
+
