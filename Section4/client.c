@@ -5,14 +5,15 @@
 #include <arpa/inet.h>
 
 #define SERVER_IP "127.0.0.1"
-#define PORT 12345
-#define NUM_MESSAGES 20
+#define PORT 8080
+#define NUM_MESSAGES 30
+#define RANDOM_MAX 17
 
 void send_random_integer(int sockfd) {
     char buffer[16];
     unsigned char random_num;
     for (int i = 0; i < NUM_MESSAGES; i++) {
-        random_num = rand() % 5 + 1;
+        random_num = rand() % RANDOM_MAX + 1;
         snprintf(buffer, sizeof(buffer), "%hhu\n", random_num);
         printf("Sending: %s", buffer);
         send(sockfd, buffer, strlen(buffer), 0);
@@ -30,9 +31,8 @@ int main() {
         perror("Socket creation error");
         exit(EXIT_FAILURE);
     }
+    //srand();
 
-    // seed by process id
-    srand(getpid());
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
