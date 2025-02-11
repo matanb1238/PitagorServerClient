@@ -6,7 +6,7 @@
 
 #define SERVER_IP "127.0.0.1"
 #define PORT 8080
-#define NUM_MESSAGES 20
+#define NUM_MESSAGES 30
 
 void send_random_integer(int sockfd) {
     char buffer[16];
@@ -31,8 +31,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // seed by process id
-    srand(getpid());
+    // srand(getpid());
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
