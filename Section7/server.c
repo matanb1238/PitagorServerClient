@@ -15,7 +15,7 @@
 #define PORT 8080
 #define BUFFER_SIZE 1024
 #define THREAD_POOL_SIZE 10
-#define LOG_FILE "pythagorean_log.txt"
+#define LOG_FILE "results.txt"
 
 pthread_mutex_t file_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t sides_mutex = PTHREAD_MUTEX_INITIALIZER;
