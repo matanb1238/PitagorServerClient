@@ -7,7 +7,6 @@
 #include <netinet/in.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <time.h>
 
 #define PORT 8080
 #define MAX_CLIENTS 100
@@ -31,11 +30,6 @@ int is_pythagorean_triple(int a, int b, int c) {
 void log_result(int a, int b, int c, int result) {
     pthread_mutex_lock(&file_mutex);
 
-    // Get the current time for logging
-    time_t now = time(NULL);
-    char *time_str = ctime(&now);
-    time_str[strlen(time_str) - 1] = '\0'; // Remove the newline character
-
     int stdout_copy = dup(STDOUT_FILENO);
     int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (log_fd < 0) {
@@ -48,7 +42,7 @@ void log_result(int a, int b, int c, int result) {
     close(log_fd);
 
     // Log to both the console and file
-    printf("[%s] Triangle: (%d, %d, %d) - %s\n", time_str, a, b, c, result ? "Pythagorean Triple" : "Not a Triple");
+    printf("Triangle: (%d, %d, %d) - %s\n", a, b, c, result ? "Pythagorean Triple" : "Not a Triple");
     fflush(stdout);
 
     dup2(stdout_copy, STDOUT_FILENO);
@@ -152,12 +146,7 @@ int main() {
             continue;
         }
 
-        // Log the time of accepting a new connection
-        time_t new_connection_time = time(NULL);
-        char *new_connection_str = ctime(&new_connection_time);
-        new_connection_str[strlen(new_connection_str) - 1] = '\0'; // Remove the newline character
-        //printf("[%s] Accepted new connection\n", new_connection_str);
-
+       
         // Create thread to handle client
         pthread_t thread_id;
         int *client_fd = malloc(sizeof(int));
