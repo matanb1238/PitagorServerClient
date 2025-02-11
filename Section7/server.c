@@ -74,9 +74,9 @@ void handle_client_request(void *arg) {
         if (bytes_received <= 0) {
             if (bytes_received == 0) {
                 printf("Client disconnected.\n");
-            } else {
-                perror("recv failed");
-            }
+            } //else {
+            //     perror("recv failed");
+            // }
             close(client_fd);
             break;
         }
