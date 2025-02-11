@@ -8,8 +8,9 @@
 #include <poll.h>
 #include <fcntl.h>
 
-#define MAX_REQUESTS 100
+#define MAX_REQUESTS 10000
 #define BUFFER_SIZE 1024
+#define LOG_FILE "results_log.txt"
 
 unsigned char requests[MAX_REQUESTS];
 int requests_count = 0;
@@ -19,7 +20,7 @@ int is_pitagor(unsigned char a, unsigned char b, unsigned char c) {
 }
 
 void log_to_file(unsigned char *requests, int count, int result) {
-    int log_fd = open("results.log", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (log_fd < 0) {
         perror("Failed to open log file");
         return;
@@ -36,7 +37,10 @@ void log_to_file(unsigned char *requests, int count, int result) {
     close(log_fd);
 
     // Write the result to the file
-    if (result) {
+    if (count < 3){
+        printf("Not enough samples\n");
+    }
+    else if (result) {
         printf("YES: The last three edges (%u, %u, %u) form a Pythagorean triple.\n",
                requests[count - 3], requests[count - 2], requests[count - 1]);
     } else {
@@ -55,6 +59,14 @@ int main() {
     socklen_t client_addr_len = sizeof(client_addr);
     struct pollfd fds[10];
     int client_count = 0;
+
+    // Clear the log file when the server starts
+    int log_fd = open(LOG_FILE, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (log_fd < 0) {
+        perror("Error clearing log file");
+        exit(EXIT_FAILURE);
+    }
+    close(log_fd);
 
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {

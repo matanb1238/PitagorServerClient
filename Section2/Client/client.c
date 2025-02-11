@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
     for (int i = 0; i < NUM_MESSAGES; i++)
     {
-        unsigned int random_num = rand() % RAND_MAX + 1;
+        unsigned int random_num = rand() % RANDOM_MAX + 1;
         printf("Sending random number: %u\n", random_num);
         send_random_integer(sockfd, random_num);
 

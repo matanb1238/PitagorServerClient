@@ -52,12 +52,12 @@ int create_connection(const char *server_address, const char *server_port)
     return sockfd;
 }
 
-void send_random_integer(int sockfd, int client_id)
+void send_random_integer(int sockfd)
 {
     unsigned char random_num;
     for (int i = 0; i < NUM_MESSAGES; i++) {
         // Generate a random unsigned char
-        random_num = rand() % RAND_MAX + 1;
+        random_num = rand() % RANDOM_MAX + 1;
 
         // Send the random number to the server
         send(sockfd, &random_num, sizeof(random_num), 0);
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 
     srand(client_id); // Seed random with client ID for variability
 
-    send_random_integer(sockfd, client_id); // Pass client ID to function
+    send_random_integer(sockfd); // Pass client ID to function
 
     // Close the socket
     close(sockfd);
