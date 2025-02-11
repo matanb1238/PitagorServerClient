@@ -11,7 +11,7 @@
 
 #define BUFFER_SIZE 1024
 #define NUM_MESSAGES 50
-#define RANDOM_MAX 17
+#define RANDOM_MAX 5
 
 
 int create_connection(const char *server_address, const char *server_port)

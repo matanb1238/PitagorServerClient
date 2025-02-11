@@ -31,7 +31,7 @@ int main() {
         perror("Socket creation error");
         exit(EXIT_FAILURE);
     }
-    //srand();
+    srand(getpid());
 
 
     serv_addr.sin_family = AF_INET;

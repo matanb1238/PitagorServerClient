@@ -72,9 +72,9 @@ int main() {
     struct sockaddr_in serverAddr, clientAddr;
     unsigned char requests[MAX_REQUESTS];
     int requests_count = 0;
-
+    
     // Create a socket
-    if ((serverSocketFd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+    if (serverSocketFd = socket(AF_INET, SOCK_STREAM, 0) == 0) {
         perror("socket failed");
         exit(EXIT_FAILURE);
     }
@@ -83,6 +83,7 @@ int main() {
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(PORT);
+    
 
     // Bind the socket to the specified port
     if (bind(serverSocketFd, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {

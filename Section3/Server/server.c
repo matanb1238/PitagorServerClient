@@ -119,7 +119,7 @@ int main() {
                     for (int j = i; j < client_count; j++) {
                         fds[j] = fds[j + 1];
                     }
-                    client_count--;
+                    client_count--; 
                     i--; // Adjust index
                     continue;
                 }
