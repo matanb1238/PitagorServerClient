@@ -130,17 +130,17 @@ void thread_pool_destroy() {
     pthread_cond_destroy(&pool.notify);
 }
 
-int main() {
-    thread_pool_init(5);  // Create a pool with 5 threads
+// int main() {
+//     thread_pool_init(5);  // Create a pool with 5 threads
 
-    for (int i = 0; i < 10; i++) {
-        int *task_id = malloc(sizeof(int));
-        *task_id = i;
-        thread_pool_add_task(example_task, task_id);  // Add tasks to the pool
-    }
+//     for (int i = 0; i < 10; i++) {
+//         int *task_id = malloc(sizeof(int));
+//         *task_id = i;
+//         thread_pool_add_task(example_task, task_id);  // Add tasks to the pool
+//     }
 
-    sleep(5);  // Allow time for threads to process tasks
-    thread_pool_destroy();  // Destroy the thread pool and clean up
+//     sleep(5);  // Allow time for threads to process tasks
+//     thread_pool_destroy();  // Destroy the thread pool and clean up
 
-    return 0;
-}
+//     return 0;
+// }
