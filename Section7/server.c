@@ -106,7 +106,6 @@ void handle_client_request(void *arg) {
         }
         pthread_mutex_unlock(&sides_mutex);
 
-        send(client_fd, buffer, bytes_received, 0);
     }
 }
 
