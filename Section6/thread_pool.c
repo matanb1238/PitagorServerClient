@@ -23,11 +23,11 @@ typedef struct {
 thread_pool_t pool;
 
 // Example task function
-void example_task(void *arg) {
-    int *task_id = (int *)arg;
-    printf("Processing task: %d\n", *task_id);
-    free(task_id);  // Don't forget to free dynamically allocated memory
-}
+// void example_task(void *arg) {
+//     int *task_id = (int *)arg;
+//     printf("Processing task: %d\n", *task_id);
+//     free(task_id);  // Don't forget to free dynamically allocated memory
+// }
 
 // Worker thread function
 void *thread_worker(void *arg) {
