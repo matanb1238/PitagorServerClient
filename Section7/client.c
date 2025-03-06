@@ -4,15 +4,17 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+
 #define SERVER_IP "127.0.0.1"
 #define PORT 8080
-#define NUM_MESSAGES 30
+#define NUM_MESSAGES 60
+#define RANDOM_MAX 13
 
 void send_random_integer(int sockfd) {
     char buffer[16];
     unsigned char random_num;
     for (int i = 0; i < NUM_MESSAGES; i++) {
-        random_num = rand() % 17 + 1;
+        random_num = rand() % RANDOM_MAX + 1;
         snprintf(buffer, sizeof(buffer), "%hhu\n", random_num);
         printf("Sending: %s", buffer);
         send(sockfd, buffer, strlen(buffer), 0);
