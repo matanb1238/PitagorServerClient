@@ -57,11 +57,11 @@ void *report_thread_func(void *arg) {
             pthread_mutex_unlock(&report_mutex);
             break;
         }
-        printf("[REPORT] Checked %d triangles, Found %d Pythagorean triples\n", total_checked, pythagorean_count);
+        printf("Checked %d triangles, Found %d Pythagorean triples\n", total_checked, pythagorean_count);
         reporting_started = 0; // Reset flag
         pthread_mutex_unlock(&report_mutex);
     }
-    printf("[INFO] Report thread exiting...\n");
+    printf("Report thread exiting...\n");
     return NULL;
 }
 
@@ -112,7 +112,7 @@ void handle_client_request(void *arg) {
 
 // Signal handler function
 void signal_handler(int signum) {
-    printf("\n[INFO] Caught SIGINT (Ctrl+C), shutting down server...\n");
+    printf("\nCaught SIGINT (Ctrl+C), shutting down server...\n");
     
     // Stop the reporting thread
     running = 0;
@@ -200,7 +200,7 @@ int main() {
         thread_pool_add_task(handle_client_request, (void *)(intptr_t)client_fd);
     }
 
-    printf("[INFO] Server has shut down gracefully.\n");
+    printf("Server has shut down gracefully.\n");
     return 0;
 }
 
