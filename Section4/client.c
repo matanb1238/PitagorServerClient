@@ -6,7 +6,7 @@
 
 #define SERVER_IP "127.0.0.1"
 #define PORT 8080
-#define NUM_MESSAGES 30
+#define NUM_MESSAGES 10
 #define RANDOM_MAX 17
 
 void send_random_integer(int sockfd) {

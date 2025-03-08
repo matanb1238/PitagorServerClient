@@ -22,12 +22,12 @@ typedef struct {
 
 thread_pool_t pool;
 
-// Example task function
-void example_task(void *arg) {
-    int *task_id = (int *)arg;
-    printf("Processing task: %d\n", *task_id);
-    free(task_id);  // Don't forget to free dynamically allocated memory
-}
+// // Example task function
+// void example_task(void *arg) {
+//     int *task_id = (int *)arg;
+//     printf("Processing task: %d\n", *task_id);
+//     free(task_id);  // Don't forget to free dynamically allocated memory
+// }
 
 // Worker thread function
 void *thread_worker(void *arg) {
@@ -42,7 +42,7 @@ void *thread_worker(void *arg) {
             pthread_mutex_unlock(&pool.lock);
             break;
         }
-
+        
         task_t *task = pool.task_head;
         if (task) {
             pool.task_head = task->next;

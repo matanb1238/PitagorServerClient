@@ -46,7 +46,6 @@ void log_result(int a, int b, int c, int result) {
     }
     pthread_mutex_unlock(&file_mutex);
 }
-
 void *report_thread_func(void *arg) {
     while (running) {
         pthread_mutex_lock(&report_mutex);
@@ -57,26 +56,21 @@ void *report_thread_func(void *arg) {
             pthread_mutex_unlock(&report_mutex);
             break;
         }
+
         printf("[REPORT] Checked %d triangles, Found %d Pythagorean triples\n", total_checked, pythagorean_count);
-        reporting_started = 0; // Reset flag
+        reporting_started = 0;
+        pthread_cond_signal(&report_cond); // Notify that the report has been printed.
         pthread_mutex_unlock(&report_mutex);
     }
-    printf("[INFO] Report thread exiting...\n");
     return NULL;
 }
 
 void handle_client_request(void *arg) {
     int client_fd = (int)(intptr_t)arg;
     char buffer[BUFFER_SIZE];
-
     while (1) {
-        int bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0);  // Blocking recv
+        int bytes_received = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
         if (bytes_received <= 0) {
-            if (bytes_received == 0) {
-                printf("Client disconnected.\n");
-            } //else {
-            //     perror("recv failed");
-            // }
             close(client_fd);
             break;
         }
@@ -97,16 +91,16 @@ void handle_client_request(void *arg) {
             total_checked++;
             if (result) pythagorean_count++;
 
-            // Start reporting thread only after checking 10 triangles
             if (total_checked % 10 == 0) {
                 reporting_started = 1;
                 pthread_cond_signal(&report_cond);
+                while (reporting_started) {
+                    pthread_cond_wait(&report_cond, &report_mutex);
+                }
             }
             pthread_mutex_unlock(&report_mutex);
         }
         pthread_mutex_unlock(&sides_mutex);
-
-        send(client_fd, buffer, bytes_received, 0);
     }
 }
 

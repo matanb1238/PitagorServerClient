@@ -7,14 +7,15 @@
 #define SERVER_IP "127.0.0.1"
 #define PORT 8080
 #define NUM_MESSAGES 50
+#define MAX_NUM 5
 
 void send_random_integer(int sockfd) {
     char buffer[16];
     unsigned char random_num;
     for (int i = 0; i < NUM_MESSAGES; i++) {
-        random_num = rand() % 5 + 1;
+        random_num = rand() % MAX_NUM + 1;
         snprintf(buffer, sizeof(buffer), "%hhu\n", random_num);
-        printf("Sending: %s", buffer);
+        printf("Client ID: %d, Buffer: %s", getpid(), buffer);
         send(sockfd, buffer, strlen(buffer), 0);
         usleep(10000); // Prevent spamming the server
     }
@@ -31,7 +32,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // srand(getpid());
+    srand(getpid());
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(PORT);
